@@ -1,0 +1,86 @@
+[
+    {
+        "address": 296,
+        "contract": "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab",
+        "description": "Anyone can withdraw ETH from the contract account.\nArbitrary senders other than the contract creator can withdraw ETH from the contract account without previously having sent an equivalent amount of ETH to it. This is likely to be a vulnerability.",
+        "function": "fallback",
+        "max_gas_used": 1601,
+        "min_gas_used": 1413,
+        "severity": "High",
+        "sourceMap": 296,
+        "swc-id": "105",
+        "title": "Unprotected Ether Withdrawal",
+        "tx_sequence": {
+            "initialState": {
+                "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef": {
+                    "balance": 0,
+                    "code": "",
+                    "nonce": 0,
+                    "storage": "{}"
+                },
+                "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab": {
+                    "balance": 0,
+                    "code": "0x60806040526004361061005b577c01000000000000000000000000000000000000000000000000000000006000350463224ee04f811461006057806324d97a4a1461007757806362a094771461007f5780638da5cb5b14610094575b600080fd5b34801561006c57600080fd5b506100756100d2565b005b610075610141565b34801561008b57600080fd5b50610075610153565b3480156100a057600080fd5b506100a9610174565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b60005473ffffffffffffffffffffffffffffffffffffffff1633146100f657600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff90911691303180156108fc02929091818181858888f1935050505015801561013e573d6000803e3d6000fd5b50565b61053934101561015057600080fd5b33ff5b6000805473ffffffffffffffffffffffffffffffffffffffff191633179055565b60005473ffffffffffffffffffffffffffffffffffffffff168156fea165627a7a72305820565c62872b1c5c8518498dd1e867e8654def328e1eea65e4c268c7b9f88a58590029",
+                    "nonce": 0,
+                    "storage": "{}"
+                }
+            },
+            "steps": [
+                {
+                    "address": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
+                    "input": "0x62a09477",
+                    "origin": "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeee",
+                    "value": "0x0"
+                },
+                {
+                    "address": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
+                    "input": "0x62a09477",
+                    "origin": "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+                    "value": "0x0"
+                },
+                {
+                    "address": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
+                    "input": "0x224ee04f",
+                    "origin": "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+                    "value": "0x0"
+                }
+            ]
+        }
+    },
+    {
+        "address": 338,
+        "contract": "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab",
+        "description": "The contract can be killed by anyone.\nAnyone can kill this contract and withdraw its balance to an arbitrary address.",
+        "function": "killme()",
+        "max_gas_used": 235,
+        "min_gas_used": 140,
+        "severity": "High",
+        "sourceMap": 338,
+        "swc-id": "106",
+        "title": "Unprotected Selfdestruct",
+        "tx_sequence": {
+            "initialState": {
+                "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef": {
+                    "balance": 0,
+                    "code": "",
+                    "nonce": 0,
+                    "storage": "{}"
+                },
+                "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab": {
+                    "balance": 0,
+                    "code": "0x60806040526004361061005b577c01000000000000000000000000000000000000000000000000000000006000350463224ee04f811461006057806324d97a4a1461007757806362a094771461007f5780638da5cb5b14610094575b600080fd5b34801561006c57600080fd5b506100756100d2565b005b610075610141565b34801561008b57600080fd5b50610075610153565b3480156100a057600080fd5b506100a9610174565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b60005473ffffffffffffffffffffffffffffffffffffffff1633146100f657600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff90911691303180156108fc02929091818181858888f1935050505015801561013e573d6000803e3d6000fd5b50565b61053934101561015057600080fd5b33ff5b6000805473ffffffffffffffffffffffffffffffffffffffff191633179055565b60005473ffffffffffffffffffffffffffffffffffffffff168156fea165627a7a72305820565c62872b1c5c8518498dd1e867e8654def328e1eea65e4c268c7b9f88a58590029",
+                    "nonce": 0,
+                    "storage": "{}"
+                }
+            },
+            "steps": [
+                {
+                    "address": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
+                    "input": "0x24d97a4a",
+                    "origin": "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+                    "value": "0x539"
+                }
+            ]
+        }
+    }
+]
