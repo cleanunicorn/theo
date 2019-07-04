@@ -1,0 +1,18 @@
+{
+    "config": {},
+    "difficulty": "500000",
+    "gasLimit": "9000000",
+    "alloc": {
+        "90f8bf6a479f320ead074411a4b0e7944ea8c9c1": { "balance": "0x56bc75e2d63100000" },
+        "ffcf8fdee72ac11b5c542428b35eef5769c409f0": { "balance": "0x56bc75e2d63100000" },
+        "22d491bde2303f2f43325b2108d26f1eaba1e32b": { "balance": "0x56bc75e2d63100000" },
+        "e11ba2b4d45eaed5996cd0823791e0c93114882d": { "balance": "0x56bc75e2d63100000" },
+        "1df62f291b2e969fb0849d99d9ce41e2f137006e": { "balance": "0x56bc75e2d63100000" }
+    },
+    "coinbase"   : "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
+    "extraData"  : "",
+    "nonce"      : "0x0000000000000042",
+    "mixhash"    : "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "parentHash" : "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "timestamp"  : "0x00"
+}

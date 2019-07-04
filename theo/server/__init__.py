@@ -1,8 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 
-
-
 def MakeHTTPRequestHandler(context):
     class HTTPRequestHandler(BaseHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
