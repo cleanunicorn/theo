@@ -18,7 +18,7 @@ class Exploit:
         return "Exploit: (txs={})".format(self.txs)
 
     def frontrun(self):
-        print("Waiting for a victim to reach for the honey.")
+        print("Waiting for a victim to reach into the honey jar.")
 
         # Wait for each tx and frontrun it.
         for tx in self.txs:
