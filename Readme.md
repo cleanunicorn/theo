@@ -60,7 +60,7 @@ Exploit: (txs=[Transaction: {'input': '0xcf7a8965', 'value': '0xde0b6b3a7640000'
 
 You can start the frontrunning monitor to listen for other hackers (script kiddies really) trying to exploit his honeypots.
 
-Use `.frontrun()` to start listening for the exploit.
+Use `.frontrun()` to start listening for the exploit and when found send a transaction with a higher gas price.
 
 ```console
 >>> exploits[0].frontrun()
