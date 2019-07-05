@@ -8,6 +8,8 @@ He knows [Karl](https://github.com/cleanunicorn/karl) from work.
 
 Theo's purpose is to fight script kiddies that try to be leet hackers. He can listen to them trying to exploit his honeypots and make them lose their funds, for his own gain.
 
+> "You didn't bring me along for my charming personality."
+
 ## Install
 
 ```console
