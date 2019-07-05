@@ -21,5 +21,17 @@
                 "server",
             ],
         },
+        {
+            "name": "Monitor tx pool",
+            "type": "python",
+            "request": "launch",
+            "program": "${cwd}/theo.py",
+            "console": "integratedTerminal",
+            "args": [
+                "tx-pool",
+                "--attacker=0xffcf8fdee72ac11b5c542428b35eef5769c409f0",
+                "--contract=0xd833215cbcc3f914bd1c9ece3ee7bf8b14f841bb",
+            ],
+        },
     ]
 }
