@@ -34,6 +34,10 @@ Requirements:
 
 ## Usage
 
+### Symbolic execution
+
+A list of expoits is automatically identified using [mythril](https://github.com/ConsenSys/mythril).
+
 Start a session by running:
 
 ```console
@@ -76,3 +80,44 @@ Mined transaction: 0x0b5e7ceedd600eaf013ca8bc74900e6d29b25ed422baaa776f42bec0187
 > "Oh, my God! The quarterback is toast!"
 
 This works very well for some specially crafted [contracts](./contracts/) or some other vulnerable contracts, as long as you make sure frontrunning is in your favor.
+
+### Load transactions from file
+
+Instead of identifying the exploits with mythril, you can specify the list of exploits yourself.
+
+Create a file that looks like this [input-tx.json](./test/input-tx.json):
+
+```json
+[
+    [
+        {
+            "input": "0x4e71e0c8",
+            "value": "0xde0b6b3a7640000"
+        },
+        {
+            "input": "0x2e64cec1",
+            "value": "0x0"
+        }
+    ],
+    [
+        {
+            "input": "0x4e71e0c8",
+            "value": "0xde0b6b3a7640000"
+        }
+    ]
+]
+```
+
+This one defines 2 exploits, the first one has 2 transactions and the second one only 1 transaction. After the exploits are loaded, frontrunning is the same.
+
+```console
+$ python ./theo.py --txs=file --contract=0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab --account=0xffcf8fdee72ac11b5c542428b35eef5769c409f0 --txs-file=./test/input-tx.json tx-pool     130 ↵
+Found exploits(s) [Exploit: (txs=[Transaction: {'input': '0x4e71e0c8', 'value': '0xde0b6b3a7640000'}, Transaction: {'input': '0x2e64cec1', 'value': '0x0'}]), Exploit: (txs=[Transaction: {'input': '0x4e71e0c8', 'value': '0xde0b6b3a7640000'}])]
+Python 3.7.3 (default, Jun 24 2019, 04:54:02) 
+[GCC 9.1.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> exploits[0].frontrun()
+Waiting for a victim to reach into the honey jar.
+Listening for Transaction: {'input': '0x4e71e0c8', 'value': '0xde0b6b3a7640000'}.
+```
