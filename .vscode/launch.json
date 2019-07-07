@@ -29,8 +29,8 @@
             "console": "integratedTerminal",
             "args": [
                 "tx-pool",
-                "--attacker=0xffcf8fdee72ac11b5c542428b35eef5769c409f0",
-                "--contract=0x9b1f7f645351af3631a656421ed2e40f2802e6c0",
+                "--account=0xffcf8fdee72ac11b5c542428b35eef5769c409f0",
+                "--contract=0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
             ],
         },
     ]

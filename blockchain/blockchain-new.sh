@@ -1,3 +1,3 @@
 #!/bin/bash
 
-geth --datadir=./ init genesis.json
+./geth.bin --datadir=./ init genesis.json
