@@ -41,13 +41,13 @@ A list of expoits is automatically identified using [mythril](https://github.com
 Start a session by running:
 
 ```console
-$ python ./theo.py tx-pool --attacker=<your unlocked account> --contract=<honeypot>
+$ python ./theo.py tx-pool --account=<your unlocked account> --contract=<honeypot>
 ```
 
 It will analyze the contract and will find a list of available exploits.
 
 ```console
-$ python theo.py tx-pool --attacker=0xffcf8fdee72ac11b5c542428b35eef5769c409f0 --contract=0xd833215cbcc3f914bd1c9ece3ee7bf8b14f841bb                                          
+$ python theo.py tx-pool --account=0xffcf8fdee72ac11b5c542428b35eef5769c409f0 --contract=0xd833215cbcc3f914bd1c9ece3ee7bf8b14f841bb                                          
 Scanning for exploits in contract: 0xd833215cbcc3f914bd1c9ece3ee7bf8b14f841bb
 Found exploit(s) [Exploit: (txs=[Transaction: {'input': '0xcf7a8965', 'value': '0xde0b6b3a7640000'}])]
 Python 3.7.3 (default, Jun 24 2019, 04:54:02) 
