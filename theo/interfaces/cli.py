@@ -1,5 +1,4 @@
 import argparse
-import psycopg2
 import code
 import json
 from theo.server import Server
