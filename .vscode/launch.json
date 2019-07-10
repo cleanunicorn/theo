@@ -29,8 +29,23 @@
             "console": "integratedTerminal",
             "args": [
                 "tx-pool",
+                "--account=0x1dF62f291b2E969fB0849d99D9Ce41e2F137006e",
+                "--account-pk=0xb0057716d5917badaf911b193b12b910811c1497b5bada8d7711f758981c3773",
+                "--contract=0xe982e462b094850f12af94d21d470e21be9d0e9c",
+                "--rpc=http://localhost:9545",
+            ],
+        },
+        {
+            "name": "Monitor remote tx pool",
+            "type": "python",
+            "request": "launch",
+            "program": "${cwd}/theo.py",
+            "console": "integratedTerminal",
+            "args": [
+                "tx-pool",
                 "--account=0xffcf8fdee72ac11b5c542428b35eef5769c409f0",
-                "--contract=0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
+                "--contract=0xb73fea9f88e93d7f2f8ea8335503465577163826",
+                "--rpc=http://34.229.200.249:10545",
             ],
         },
     ]

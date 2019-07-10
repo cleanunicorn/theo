@@ -3,7 +3,7 @@ from theo.exploit.exploit import Exploit
 from theo.exploit.exploit_item import ExploitItem
 
 
-def load_file(file, rpc, contract, account):
+def load_file(file, rpc, contract, account, account_pk):
     with open(file) as f:
         exploit_list = json.load(f)
 
@@ -13,6 +13,6 @@ def load_file(file, rpc, contract, account):
         for tx in exploit:
             txs.append(ExploitItem({"input": tx["input"], "value": tx["value"]}, rpc))
 
-        exploits.append(Exploit(txs, rpc, contract, account))
+        exploits.append(Exploit(txs, rpc, contract, account, account_pk))
 
     return exploits

@@ -8,7 +8,7 @@ from theo.exploit.exploit import Exploit
 from theo.exploit.exploit_item import ExploitItem
 
 
-def find_exploits(rpc, contract, attacker) -> Exploit:
+def find_exploits(rpc, contract, account, account_pk) -> Exploit:
     conf = MythrilConfig()
 
     if re.match(r"^https", rpc):
@@ -48,6 +48,6 @@ def find_exploits(rpc, contract, attacker) -> Exploit:
         for si in issue.transaction_sequence["steps"]:
             txs.append(ExploitItem({"input": si["input"], "value": si["value"]}, rpc))
 
-        exploits.append(Exploit(txs, rpc, contract, attacker))
+        exploits.append(Exploit(txs, rpc, contract, account, account_pk))
 
     return exploits

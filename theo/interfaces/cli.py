@@ -17,6 +17,7 @@ def main():
         "--rpc", help="Connect to this RPC", default="http://127.0.0.1:8545"
     )
     tx_pool.add_argument("--account", help="Use this account to send transactions from")
+    tx_pool.add_argument("--account-pk", help="The account's private key")
 
     # Contract to monitor
     parser.add_argument(
@@ -60,13 +61,19 @@ def exec_tx_pool(args):
                 contract=args.contract
             )
         )
-        exploits = find_exploits(args.rpc, args.contract, args.account)
+        exploits = find_exploits(
+            rpc=args.rpc,
+            contract=args.contract,
+            account=args.account,
+            account_pk=args.account_pk,
+        )
     if args.txs == "file":
         exploits = load_file(
             file=args.txs_file,
             rpc=args.rpc,
             contract=args.contract,
             account=args.account,
+            account_pk=args.account_pk,
         )
 
     if len(exploits) == 0:
