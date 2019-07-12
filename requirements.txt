@@ -31,7 +31,7 @@ lru-dict==1.1.6
 MarkupSafe==1.1.1
 matplotlib==3.1.1
 mock==3.0.5
-mythril==0.21.7
+mythril==0.21.8
 numpy==1.16.4
 parsimonious==0.8.1
 pbkdf2==1.3
