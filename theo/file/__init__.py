@@ -14,7 +14,7 @@ def load_file(file, rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account=
         for tx in exploit:
             txs.append(
                 ExploitItem(
-                    tx_data={"input": tx.get("input", ""), "value": tx.get("value", "")}
+                    tx_data={"input": tx.get("input", "0x"), "value": tx.get("value", "")}
                 )
             )
 
