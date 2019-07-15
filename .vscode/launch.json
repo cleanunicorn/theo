@@ -33,5 +33,19 @@
                 "--contract=0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
             ],
         },
+        {
+            "name": "Monitor tx pool predefined txs",
+            "type": "python",
+            "request": "launch",
+            "program": "${cwd}/theo.py",
+            "console": "integratedTerminal",
+            "args": [
+                "tx-pool",
+                "--account=0xffcf8fdee72ac11b5c542428b35eef5769c409f0",
+                "--contract=0xAc9F29f8878A2F7C0FF08C8FC7ED675e0C499DdC",
+                "--txs=file",
+                "--txs-file=./test/input-tx.json",
+            ],
+        },
     ]
 }
