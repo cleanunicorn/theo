@@ -1,9 +1,10 @@
 import json
+from web3 import Web3
 from theo.exploit.exploit import Exploit
 from theo.exploit.exploit_item import ExploitItem
 
 
-def load_file(file, rpc, contract, account, account_pk):
+def load_file(file, rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account="", account_pk=""):
     with open(file) as f:
         exploit_list = json.load(f)
 
@@ -11,8 +12,22 @@ def load_file(file, rpc, contract, account, account_pk):
     for exploit in exploit_list:
         txs = []
         for tx in exploit:
-            txs.append(ExploitItem({"input": tx["input"], "value": tx["value"]}, rpc))
+            txs.append(
+                ExploitItem(
+                    tx_data={"input": tx.get("input", "0x"), "value": tx.get("value", "")}
+                )
+            )
 
-        exploits.append(Exploit(txs, rpc, contract, account, account_pk))
+        exploits.append(
+            Exploit(
+                txs=txs,
+                w3=Web3(
+                    Web3.WebsocketProvider(rpcWS, websocket_kwargs={"timeout": 60})
+                ),
+                contract=contract,
+                account=account,
+                account_pk=account_pk,
+            )
+        )
 
     return exploits

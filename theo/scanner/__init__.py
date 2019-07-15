@@ -1,21 +1,21 @@
 import json
 import re
 import time
-
 from mythril.exceptions import CriticalError
 from mythril.mythril import MythrilAnalyzer, MythrilDisassembler, MythrilConfig
+from web3 import Web3
 from theo.exploit.exploit import Exploit
 from theo.exploit.exploit_item import ExploitItem
 
 
-def find_exploits(rpc, contract, account, account_pk) -> Exploit:
+def find_exploits(rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account="", account_pk="") -> Exploit:
     conf = MythrilConfig()
 
-    if re.match(r"^https", rpc):
-        rpchost = rpc[8:]
+    if re.match(r"^https", rpcHTTP):
+        rpchost = rpcHTTP[8:]
         rpctls = True
     else:
-        rpchost = rpc[7:]
+        rpchost = rpcHTTP[7:]
         rpctls = False
 
     conf.set_api_rpc(rpchost, rpctls)
@@ -40,14 +40,37 @@ def find_exploits(rpc, contract, account, account_pk) -> Exploit:
         modules=["ether_thief", "suicide"], transaction_count=3
     )
 
+    if rpcIPC is not None:
+        w3 = Web3(
+            Web3.IPCProvider(rpcIPC)
+        )
+    elif rpcWS is not None:
+        w3 = Web3(
+            Web3.WebsocketProvider(rpcWS)
+        )
+    else:
+        w3 = Web3(
+            Web3.WebsocketProvider(rpcHTTP)
+        )
+
     exploits = []
     for ri in report.issues:
         txs = []
         issue = report.issues[ri]
 
         for si in issue.transaction_sequence["steps"]:
-            txs.append(ExploitItem({"input": si["input"], "value": si["value"]}, rpc))
+            txs.append(
+                ExploitItem(tx_data={"input": si["input"], "value": si["value"]})
+            )
 
-        exploits.append(Exploit(txs, rpc, contract, account, account_pk))
+        exploits.append(
+            Exploit(
+                txs=txs,
+                w3=w3,
+                contract=contract,
+                account=account,
+                account_pk=account_pk,
+            )
+        )
 
     return exploits

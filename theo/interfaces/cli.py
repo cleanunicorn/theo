@@ -14,7 +14,13 @@ def main():
     # Monitor tx pool
     tx_pool = parser.add_argument_group("Monitor transaction pool")
     tx_pool.add_argument(
-        "--rpc", help="Connect to this RPC", default="http://127.0.0.1:8545"
+        "--rpc-http", help="Connect to this HTTP RPC", default="http://127.0.0.1:8545"
+    )
+    tx_pool.add_argument(
+        "--rpc-ws", help="Connect to this WebSockets RPC", default=None
+    )
+    tx_pool.add_argument(
+        "--rpc-ipc", help="Connect to this IPC RPC", default=None
     )
     tx_pool.add_argument("--account", help="Use this account to send transactions from")
     tx_pool.add_argument("--account-pk", help="The account's private key")
@@ -62,7 +68,9 @@ def exec_tx_pool(args):
             )
         )
         exploits = find_exploits(
-            rpc=args.rpc,
+            rpcHTTP=args.rpc_http,
+            rpcWS=args.rpc_ws,
+            rpcIPC=args.rpc_ipc,
             contract=args.contract,
             account=args.account,
             account_pk=args.account_pk,
@@ -70,7 +78,9 @@ def exec_tx_pool(args):
     if args.txs == "file":
         exploits = load_file(
             file=args.txs_file,
-            rpc=args.rpc,
+            rpcHTTP=args.rpc_http,
+            rpcWS=args.rpc_ws,
+            rpcIPC=args.rpc_ipc,
             contract=args.contract,
             account=args.account,
             account_pk=args.account_pk,
