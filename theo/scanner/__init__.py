@@ -8,7 +8,7 @@ from theo.exploit.exploit import Exploit
 from theo.exploit.exploit_item import ExploitItem
 
 
-def find_exploits(rpcHTTP, rpcWS, contract, attacker) -> Exploit:
+def find_exploits(rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account="") -> Exploit:
     conf = MythrilConfig()
 
     if re.match(r"^https", rpcHTTP):
@@ -40,14 +40,36 @@ def find_exploits(rpcHTTP, rpcWS, contract, attacker) -> Exploit:
         modules=["ether_thief", "suicide"], transaction_count=3
     )
 
+    if rpcIPC is not None:
+        w3 = Web3(
+            Web3.IPCProvider(rpcIPC)
+        )
+    elif rpcWS is not None:
+        w3 = Web3(
+            Web3.WebsocketProvider(rpcWS)
+        )
+    else:
+        w3 = Web3(
+            Web3.WebsocketProvider(rpcHTTP)
+        )
+
     exploits = []
     for ri in report.issues:
         txs = []
         issue = report.issues[ri]
 
         for si in issue.transaction_sequence["steps"]:
-            txs.append(ExploitItem(tx_data={"input": si["input"], "value": si["value"]}))
+            txs.append(
+                ExploitItem(tx_data={"input": si["input"], "value": si["value"]})
+            )
 
-        exploits.append(Exploit(txs=txs, w3=Web3(Web3.WebsocketProvider(rpcWS, websocket_kwargs={'timeout': 60})), contract=contract, account=attacker))
+        exploits.append(
+            Exploit(
+                txs=txs,
+                w3=w3,
+                contract=contract,
+                account=account,
+            )
+        )
 
     return exploits
