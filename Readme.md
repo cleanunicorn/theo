@@ -34,6 +34,41 @@ Requirements:
 
 ## Usage
 
+### Help screen
+
+It's a good idea to check the help screen first.
+
+```console
+$ python ./theo.py --help
+usage: theo.py [-h] [--rpc-http RPC_HTTP] [--rpc-ws RPC_WS]
+               [--rpc-ipc RPC_IPC] [--account ACCOUNT] [--contract ADDRESS]
+               [--txs {mythril,file}] [--txs-file FILE]
+               {tx-pool}
+
+Monitor contracts for balance changes or tx pool.
+
+positional arguments:
+  {tx-pool}             Choose between: balance (not implemented: monitor
+                        contract balance changes), tx-pool (if any
+                        transactions want to call methods).
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --contract ADDRESS    Contract to monitor
+
+Monitor transaction pool:
+  --rpc-http RPC_HTTP   Connect to this HTTP RPC
+  --rpc-ws RPC_WS       Connect to this WebSockets RPC
+  --rpc-ipc RPC_IPC     Connect to this IPC RPC
+  --account ACCOUNT     Use this account to send transactions from
+
+Transactions to wait for:
+  --txs {mythril,file}  Choose between: mythril (find transactions
+                        automatically with mythril), file (use the
+                        transactions specified in a JSON file).
+  --txs-file FILE       The file which contains the transactions to frontrun
+```
+
 ### Symbolic execution
 
 A list of expoits is automatically identified using [mythril](https://github.com/ConsenSys/mythril).
