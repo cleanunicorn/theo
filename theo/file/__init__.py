@@ -21,7 +21,7 @@ def load_file(file, rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account=
     else:
         print("Connecting to {rpc}.".format(rpc=rpcHTTP))
         w3 = Web3(
-            Web3.WebsocketProvider(rpcHTTP)
+            Web3.HTTPProvider(rpcHTTP)
         )
 
     exploits = []
