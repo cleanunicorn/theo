@@ -8,6 +8,22 @@ def load_file(file, rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account=
     with open(file) as f:
         exploit_list = json.load(f)
 
+    if rpcIPC is not None:
+        print("Connecting to {rpc}.".format(rpcIPC))
+        w3 = Web3(
+            Web3.IPCProvider(rpcIPC)
+        )
+    elif rpcWS is not None:
+        print("Connecting to {rpc}.".format(rpcWS))
+        w3 = Web3(
+            Web3.WebsocketProvider(rpcWS)
+        )
+    else:
+        print("Connecting to {rpc}.".format(rpcHTTP))
+        w3 = Web3(
+            Web3.WebsocketProvider(rpcHTTP)
+        )
+
     exploits = []
     for exploit in exploit_list:
         txs = []
@@ -21,9 +37,7 @@ def load_file(file, rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account=
         exploits.append(
             Exploit(
                 txs=txs,
-                w3=Web3(
-                    Web3.WebsocketProvider(rpcWS, websocket_kwargs={"timeout": 60})
-                ),
+                w3=w3,
                 contract=contract,
                 account=account,
                 account_pk=account_pk,
