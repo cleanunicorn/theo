@@ -44,21 +44,12 @@ def main():
         metavar="FILE",
     )
 
-    # Run mode
-    parser.add_argument(
-        "run_mode",
-        choices=["tx-pool"],
-        help="Choose between: balance (not implemented: monitor contract balance changes), tx-pool (if any transactions want to call methods).",
-    )
-
     args = parser.parse_args()
-    # print(args.__dict__)
 
-    if args.run_mode == "tx-pool":
-        exec_tx_pool(args)
+    start_repl(args)
 
 
-def exec_tx_pool(args):
+def start_repl(args):
 
     # Transactions to frontrun
     if args.txs == "mythril":
