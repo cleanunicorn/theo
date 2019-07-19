@@ -41,19 +41,19 @@ def find_exploits(rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account=""
     )
 
     if rpcIPC is not None:
-        print("Connecting to {rpc}.".format(rpc=rpcIPC))
+        print("Connecting to IPC: {rpc}.".format(rpc=rpcIPC))
         w3 = Web3(
             Web3.IPCProvider(rpcIPC)
         )
     elif rpcWS is not None:
-        print("Connecting to {rpc}.".format(rpc=rpcWS))
+        print("Connecting to WebSocket: {rpc}.".format(rpc=rpcWS))
         w3 = Web3(
             Web3.WebsocketProvider(rpcWS)
         )
     else:
-        print("Connecting to {rpc}.".format(rpc=rpcHTTP))
+        print("Connecting to HTTP: {rpc}.".format(rpc=rpcHTTP))
         w3 = Web3(
-            Web3.WebsocketProvider(rpcHTTP)
+            Web3.HTTPProvider(rpcHTTP)
         )
 
     exploits = []
