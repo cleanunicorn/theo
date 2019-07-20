@@ -38,7 +38,7 @@ def exploits_from_mythril(
             eth=EthJsonRpc(host=host, port=port, tls=rpc_tls),
             solc_version=None,
             solc_args=None,
-            enable_online_lookup=enable_online_lookup
+            enable_online_lookup=enable_online_lookup,
         )
         disassembler.load_from_address(contract)
         # Analyzer

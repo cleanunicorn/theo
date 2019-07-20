@@ -42,12 +42,9 @@ def main():
 
     # Load exploits from file
     parser.add_argument(
-        "--load-file",
-        type=str,
-        help="Load exploit from file",
-        default="",
+        "--load-file", type=str, help="Load exploit from file", default=""
     )
-    
+
     args = parser.parse_args()
 
     # Get account from the private key
@@ -86,14 +83,13 @@ def start_repl(args):
         ]
 
     if len(exploits) == 0:
-        print(
-            "No exploits found. You're going to need to load some exploits."
-        )
+        print("No exploits found. You're going to need to load some exploits.")
     else:
         print("Found exploits(s)", exploits)
 
     # Load history
     history_path = "./.theo_history"
+
     def save_history(historyPath=history_path):
         import readline
 
@@ -101,16 +97,19 @@ def start_repl(args):
 
     import os
     import readline
+
     if os.path.isfile(history_path):
         readline.read_history_file(history_path)
     # Trigger history save on exit
     import atexit
+
     atexit.register(save_history)
     # Load variables
     vars = globals()
     vars.update(locals())
     # Start REPL
     import rlcompleter
+
     readline.set_completer(rlcompleter.Completer(vars).complete)
     readline.parse_and_bind("tab: complete")
     del os, atexit, readline, rlcompleter, save_history
