@@ -32,20 +32,22 @@ def main():
         "--contract", help="Contract to monitor", type=str, metavar="ADDRESS"
     )
 
-    # Exploits to load
-    source = parser.add_argument_group("Where to load exploits from")
-    source.add_argument(
-        "--source",
-        choices=["mythril", "file", None],
-        help="Choose between: mythril (find transactions automatically with mythril), file (use the transactions specified in a JSON file).",
-        default=None,
-    )
-    source.add_argument(
-        "--file",
-        help="The file which contains the transactions to frontrun",
-        metavar="FILE",
+    # Find exploits with Mythril
+    parser.add_argument(
+        "--skip-mythril",
+        type=bool,
+        help="Don't try to find exploits with Mythril",
+        default=False,
     )
 
+    # Load exploits from file
+    parser.add_argument(
+        "--load-file",
+        type=str,
+        help="Load exploit from file",
+        default="",
+    )
+    
     args = parser.parse_args()
 
     # Get account from the private key
@@ -58,23 +60,23 @@ def start_repl(args):
     exploits = []
 
     # Transactions to frontrun
-    if args.source == "mythril":
+    if args.skip_mythril is False:
         print(
             "Scanning for exploits in contract: {contract}".format(
                 contract=args.contract
             )
         )
-        exploits = exploits_from_mythril(
+        exploits += exploits_from_mythril(
             rpcHTTP=args.rpc_http,
             rpcWS=args.rpc_ws,
             rpcIPC=args.rpc_ipc,
             contract=args.contract,
             account_pk=args.account_pk,
         )
-    if args.source == "file":
-        exploits = [
+    if args.load_file != "":
+        exploits += [
             exploits_from_file(
-                file=args.txs_file,
+                file=args.load_file,
                 rpcHTTP=args.rpc_http,
                 rpcWS=args.rpc_ws,
                 rpcIPC=args.rpc_ipc,
@@ -85,13 +87,7 @@ def start_repl(args):
 
     if len(exploits) == 0:
         print(
-            "No exploits found. You're going to need to load some exploits with one of:"
-        )
-        print(
-            'load_file(file="/path/to/file.json", rpcHTTP="http://localhost:8545", contract="0xContractAddress", account_pk="0xYourPrivateKey")'
-        )
-        print(
-            'load_mythril(rpcHTTP="http://localhost:8545", contract="0xContractAddress", account_pk="0xYourPrivateKey")'
+            "No exploits found. You're going to need to load some exploits."
         )
     else:
         print("Found exploits(s)", exploits)
