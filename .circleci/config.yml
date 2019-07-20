@@ -1,0 +1,81 @@
+# Circleci build file
+# https://circleci.com/gh/cleanunicorn/karl
+
+defaults: &defaults
+  docker:
+    - image: circleci/python:3.7.1
+  working_directory: ~/app
+
+version: 2
+jobs:
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "requirements.txt" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: Install dependencies
+          command: |
+            pip install --user -r requirements.txt
+
+      - run:
+          name: Black style check
+          command: |
+            pip3 install --user black
+            python3 -m black --check ~/app/
+
+      - run:
+          name: Ensuring that setup script is functional
+          command: python3 setup.py install
+          working_directory: ~/app
+
+      - store_test_results:
+          path: test-results
+
+      - store_artifacts:
+          path: test-results
+          destination: tr1
+
+  pypi_release:
+    <<: *defaults
+    steps:
+      - checkout:
+          path: ~/app
+      - run:
+          name: Verify Git tag vs. version
+          command: python3 setup.py verify
+      - run:
+          name: Build
+          command: python3 setup.py sdist
+      - run:
+          name: Deploy
+          command: |
+            sudo pip install --upgrade pip wheel setuptools twine
+            twine upload dist/*
+
+workflows:
+  version: 2
+  build_and_release:
+    jobs:
+      - test:
+          filters:
+            tags:
+              only: /.*/
+      - pypi_release:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v[0-9]+(\.[0-9]+(dev|)([0-9]+|))*/
+          requires:
+            - test
