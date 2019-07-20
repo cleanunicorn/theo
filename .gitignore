@@ -124,3 +124,10 @@ dmypy.json
 .pyre/
 
 .theo_history
+.vscode/tasks.json
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
