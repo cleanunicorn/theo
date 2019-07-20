@@ -1,0 +1,7 @@
+include *.py
+include requirements.txt
+
+prune .git
+prune venv
+prune test*
+prune examples/sample?/build
