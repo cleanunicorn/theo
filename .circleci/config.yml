@@ -1,5 +1,5 @@
 # Circleci build file
-# https://circleci.com/gh/cleanunicorn/karl
+# https://circleci.com/gh/cleanunicorn/theo
 
 defaults: &defaults
   docker:
