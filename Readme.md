@@ -1,3 +1,5 @@
+**Readme is obsolete; will be rewritten until 2019-08-31.**
+
 # Theo
 
 Theo is a great hacker showing the other script kiddies how things should be done.
