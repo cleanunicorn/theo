@@ -1,60 +1,74 @@
 import json
 import re
-import time
 from mythril.exceptions import CriticalError
 from mythril.mythril import MythrilAnalyzer, MythrilDisassembler, MythrilConfig
+from mythril.ethereum.interface.rpc.client import EthJsonRpc
 from web3 import Web3
 from theo.exploit.exploit import Exploit
-from theo.exploit.exploit_item import ExploitItem
+from theo.exploit.tx import Tx
+from theo import private_key_to_account
 
 
-def find_exploits(rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account="", account_pk="") -> Exploit:
-    conf = MythrilConfig()
-
+def exploits_from_mythril(
+    rpcHTTP="http://localhost:8545",
+    rpcWS=None,
+    rpcIPC=None,
+    contract="",
+    account_pk="",
+    strategy="bfs",
+    modules=["ether_thief", "suicide"],
+    transaction_count=3,
+    execution_timeout=120,
+    max_depth=32,
+    loop_bound=3,
+    disable_dependency_pruning=False,
+    onchain_storage_access=True,
+    enable_online_lookup=False,
+):
     if re.match(r"^https", rpcHTTP):
-        rpchost = rpcHTTP[8:]
-        rpctls = True
+        host, port = rpcHTTP[8:].split(":")
+        rpc_tls = True
     else:
-        rpchost = rpcHTTP[7:]
-        rpctls = False
-
-    conf.set_api_rpc(rpchost, rpctls)
+        host, port = rpcHTTP[7:].split(":")
+        rpc_tls = False
 
     try:
-        disassembler = MythrilDisassembler(eth=conf.eth, enable_online_lookup=False)
+        # Disassembler
+        disassembler = MythrilDisassembler(
+            eth=EthJsonRpc(host=host, port=port, tls=rpc_tls),
+            solc_version=None,
+            solc_args=None,
+            enable_online_lookup=enable_online_lookup
+        )
         disassembler.load_from_address(contract)
+        # Analyzer
         analyzer = MythrilAnalyzer(
-            strategy="bfs",
+            strategy=strategy,
             disassembler=disassembler,
             address=contract,
-            execution_timeout=120,
-            max_depth=32,
-            loop_bound=3,
-            disable_dependency_pruning=False,
-            onchain_storage_access=True,
+            execution_timeout=execution_timeout,
+            max_depth=max_depth,
+            loop_bound=loop_bound,
+            disable_dependency_pruning=disable_dependency_pruning,
+            onchain_storage_access=onchain_storage_access,
+        )
+        # Generate report
+        report = analyzer.fire_lasers(
+            modules=modules, transaction_count=transaction_count
         )
     except CriticalError as e:
         print(e)
-
-    report = analyzer.fire_lasers(
-        modules=["ether_thief", "suicide"], transaction_count=3
-    )
+        return []
 
     if rpcIPC is not None:
         print("Connecting to IPC: {rpc}.".format(rpc=rpcIPC))
-        w3 = Web3(
-            Web3.IPCProvider(rpcIPC)
-        )
+        w3 = Web3(Web3.IPCProvider(rpcIPC))
     elif rpcWS is not None:
         print("Connecting to WebSocket: {rpc}.".format(rpc=rpcWS))
-        w3 = Web3(
-            Web3.WebsocketProvider(rpcWS)
-        )
+        w3 = Web3(Web3.WebsocketProvider(rpcWS))
     else:
         print("Connecting to HTTP: {rpc}.".format(rpc=rpcHTTP))
-        w3 = Web3(
-            Web3.HTTPProvider(rpcHTTP)
-        )
+        w3 = Web3(Web3.HTTPProvider(rpcHTTP))
 
     exploits = []
     for ri in report.issues:
@@ -62,16 +76,14 @@ def find_exploits(rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account=""
         issue = report.issues[ri]
 
         for si in issue.transaction_sequence["steps"]:
-            txs.append(
-                ExploitItem(tx_data={"input": si["input"], "value": si["value"]})
-            )
+            txs.append(Tx(data=si["input"], value=si["value"]))
 
         exploits.append(
             Exploit(
                 txs=txs,
                 w3=w3,
                 contract=contract,
-                account=account,
+                account=private_key_to_account(account_pk),
                 account_pk=account_pk,
             )
         )

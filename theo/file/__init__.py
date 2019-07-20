@@ -1,47 +1,36 @@
 import json
 from web3 import Web3
 from theo.exploit.exploit import Exploit
-from theo.exploit.exploit_item import ExploitItem
+from theo.exploit.tx import Tx
+from theo import private_key_to_account
 
 
-def load_file(file, rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account="", account_pk=""):
+def exploits_from_file(
+    file, rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account_pk=""
+):
     with open(file) as f:
-        exploit_list = json.load(f)
+        transaction_list = json.load(f)
 
     if rpcIPC is not None:
         print("Connecting to IPC: {rpc}.".format(rpc=rpcIPC))
-        w3 = Web3(
-            Web3.IPCProvider(rpcIPC)
-        )
+        w3 = Web3(Web3.IPCProvider(rpcIPC))
     elif rpcWS is not None:
         print("Connecting to WebSocket: {rpc}.".format(rpc=rpcWS))
-        w3 = Web3(
-            Web3.WebsocketProvider(rpcWS)
-        )
+        w3 = Web3(Web3.WebsocketProvider(rpcWS))
     else:
         print("Connecting to HTTP: {rpc}.".format(rpc=rpcHTTP))
-        w3 = Web3(
-            Web3.HTTPProvider(rpcHTTP)
-        )
+        w3 = Web3(Web3.HTTPProvider(rpcHTTP))
 
-    exploits = []
-    for exploit in exploit_list:
-        txs = []
-        for tx in exploit:
-            txs.append(
-                ExploitItem(
-                    tx_data={"input": tx.get("input", "0x"), "value": tx.get("value", "")}
-                )
-            )
+    txs = []
+    for tx in transaction_list:
+        txs.append(Tx(data=tx.get("input", "0x"), value=tx.get("value", 0)))
 
-        exploits.append(
-            Exploit(
-                txs=txs,
-                w3=w3,
-                contract=contract,
-                account=account,
-                account_pk=account_pk,
-            )
-        )
+    exploit = Exploit(
+        txs=txs,
+        w3=w3,
+        contract=contract,
+        account=private_key_to_account(account_pk),
+        account_pk=account_pk,
+    )
 
-    return exploits
+    return exploit

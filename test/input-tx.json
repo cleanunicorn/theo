@@ -1,23 +1,10 @@
 [
-    [
-        {
-            "input": "0x4e71e0c8",
-            "value": "0xde0b6b3a7640000"
-        },
-        {
-            "input": "0x2e64cec1",
-            "value": "0x0"
-        }
-    ],
-    [
-        {
-            "input": "0x4e71e0c8",
-            "value": "0xde0b6b3a7640000"
-        }
-    ],
-    [
-        {
-            "input": "0x"
-        }
-    ]
+    {
+        "input": "0x4e71e0c8",
+        "value": 100000000000000000
+    },
+    {
+        "input": "0x2e64cec1",
+        "value": "0x0"
+    }
 ]
