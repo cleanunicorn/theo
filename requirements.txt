@@ -1,3 +1,2 @@
 web3==4.9.2
 mythril==0.21.8
-argparse_prompt==0.0.4

@@ -1,7 +1,8 @@
-from argparse_prompt import PromptParser
+# from argparse_prompt import PromptParser
 import argparse
 import code
 import json
+from theo.version import __version__
 from theo.server import Server
 from theo.scanner import exploits_from_mythril
 from theo.file import exploits_from_file
@@ -9,7 +10,7 @@ from theo import private_key_to_account
 
 
 def main():
-    parser = PromptParser(
+    parser = argparse.ArgumentParser(
         description="Monitor contracts for balance changes or tx pool.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
@@ -25,11 +26,11 @@ def main():
     rpc.add_argument("--rpc-ipc", help="Connect to this IPC RPC", default=None)
 
     # Account to use for attacking
-    parser.add_argument("--account-pk", help="The account's private key", secure=True)
+    parser.add_argument("--account-pk", help="The account's private key")
 
     # Contract to monitor
     parser.add_argument(
-        "--contract", help="Contract to monitor", type=str, metavar="ADDRESS"
+        "--contract", help="Contract to monitor", metavar="ADDRESS"
     )
 
     # Find exploits with Mythril
@@ -45,13 +46,22 @@ def main():
         "--load-file", type=str, help="Load exploit from file", default=""
     )
 
+    # Print version and exit
+    parser.add_argument(
+        '--version', action='version', version='Version: {}'.format(__version__)
+    )
+
     args = parser.parse_args()
 
     # Get account from the private key
-    args.account = private_key_to_account(args.account_pk)
+    if args.account_pk is None:
+        args.account_pk = input("Enter a private key: ")
+        args.account = private_key_to_account(args.account_pk)
+
+    if args.contract is None:
+        args.contract = input("Enter a contract to scan: ")
 
     start_repl(args)
-
 
 def start_repl(args):
     exploits = []
