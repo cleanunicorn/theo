@@ -29,9 +29,7 @@ def main():
     parser.add_argument("--account-pk", help="The account's private key")
 
     # Contract to monitor
-    parser.add_argument(
-        "--contract", help="Contract to monitor", metavar="ADDRESS"
-    )
+    parser.add_argument("--contract", help="Contract to monitor", metavar="ADDRESS")
 
     # Find exploits with Mythril
     parser.add_argument(
@@ -48,7 +46,7 @@ def main():
 
     # Print version and exit
     parser.add_argument(
-        '--version', action='version', version='Version: {}'.format(__version__)
+        "--version", action="version", version="Version: {}".format(__version__)
     )
 
     args = parser.parse_args()
@@ -62,6 +60,7 @@ def main():
         args.contract = input("Enter a contract to scan: ")
 
     start_repl(args)
+
 
 def start_repl(args):
     exploits = []
