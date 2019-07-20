@@ -19,8 +19,9 @@
             "console": "integratedTerminal",
             "args": [
                 "--account-pk=0xb0057716d5917badaf911b193b12b910811c1497b5bada8d7711f758981c3773",
-                "--contract=0xad888d0ade988ebee74b8d4f39bf29a8d0fe8a8d",
+                "--contract=0x7c728214be9a0049e6a86f2137ec61030d0aa964",
                 "--rpc-http=http://localhost:8545",
+                "--source=mythril",
                 // "--rpc-ws=ws://localhost:8545",
             ],
         },

@@ -33,14 +33,14 @@ def main():
     )
 
     # Exploits to load
-    exploits = parser.add_argument_group("Where to load exploits from")
-    exploits.add_argument(
-        "--exploits",
+    source = parser.add_argument_group("Where to load exploits from")
+    source.add_argument(
+        "--source",
         choices=["mythril", "file", None],
         help="Choose between: mythril (find transactions automatically with mythril), file (use the transactions specified in a JSON file).",
         default=None,
     )
-    exploits.add_argument(
+    source.add_argument(
         "--file",
         help="The file which contains the transactions to frontrun",
         metavar="FILE",
@@ -58,7 +58,7 @@ def start_repl(args):
     exploits = []
 
     # Transactions to frontrun
-    if args.exploits == "mythril":
+    if args.source == "mythril":
         print(
             "Scanning for exploits in contract: {contract}".format(
                 contract=args.contract
@@ -71,7 +71,7 @@ def start_repl(args):
             contract=args.contract,
             account_pk=args.account_pk,
         )
-    if args.exploits == "file":
+    if args.source == "file":
         exploits = [
             exploits_from_file(
                 file=args.txs_file,
@@ -98,7 +98,6 @@ def start_repl(args):
 
     # Load history
     history_path = "./.theo_history"
-
     def save_history(historyPath=history_path):
         import readline
 
@@ -106,19 +105,16 @@ def start_repl(args):
 
     import os
     import readline
-
     if os.path.isfile(history_path):
         readline.read_history_file(history_path)
     # Trigger history save on exit
     import atexit
-
     atexit.register(save_history)
     # Load variables
     vars = globals()
     vars.update(locals())
     # Start REPL
     import rlcompleter
-
     readline.set_completer(rlcompleter.Completer(vars).complete)
     readline.parse_and_bind("tab: complete")
     del os, atexit, readline, rlcompleter, save_history
