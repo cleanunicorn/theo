@@ -18,7 +18,7 @@ contract VulnerableTwoStep {
         }
     }
 
-    function steal() public payable {
+    function retrieve() public payable {
         owner.transfer(address(this).balance);
     }
 }
