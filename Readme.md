@@ -74,7 +74,7 @@ Requirements:
 
 ## Demos
 
-### Find exploit and run it
+### Find exploit and execute it
 
 Scan a smart contract, find exploits, exploit it:
 
