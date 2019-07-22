@@ -63,6 +63,9 @@ def main():
     if args.contract is None:
         args.contract = input("Contract to interact with\n> ")
 
+    args.contract = Web3.toChecksumAddress(args.contract)
+    args.account = Web3.toChecksumAddress(args.account)
+
     start_repl(args)
 
 
