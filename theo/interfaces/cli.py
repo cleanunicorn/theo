@@ -2,6 +2,8 @@
 import argparse
 import code
 import json
+import getpass
+from web3 import Web3
 from theo.version import __version__
 from theo.server import Server
 from theo.scanner import exploits_from_mythril
@@ -29,14 +31,16 @@ def main():
     parser.add_argument("--account-pk", help="The account's private key")
 
     # Contract to monitor
-    parser.add_argument("--contract", help="Contract to monitor", metavar="ADDRESS")
+    parser.add_argument(
+        "--contract", help="Contract to interact with", metavar="ADDRESS"
+    )
 
     # Find exploits with Mythril
     parser.add_argument(
         "--skip-mythril",
-        type=bool,
-        help="Don't try to find exploits with Mythril",
+        help="Skip scanning the contract with Mythril",
         default=False,
+        action="store_true",
     )
 
     # Load exploits from file
@@ -53,11 +57,13 @@ def main():
 
     # Get account from the private key
     if args.account_pk is None:
-        args.account_pk = input("Enter a private key: ")
+        args.account_pk = getpass.getpass(
+            prompt="The account's private key (input hidden)\n> "
+        )
         args.account = private_key_to_account(args.account_pk)
 
     if args.contract is None:
-        args.contract = input("Enter a contract to scan: ")
+        args.contract = input("Contract to interact with\n> ")
 
     start_repl(args)
 
@@ -80,21 +86,22 @@ def start_repl(args):
             account_pk=args.account_pk,
         )
     if args.load_file != "":
-        exploits += [
-            exploits_from_file(
-                file=args.load_file,
-                rpcHTTP=args.rpc_http,
-                rpcWS=args.rpc_ws,
-                rpcIPC=args.rpc_ipc,
-                contract=args.contract,
-                account_pk=args.account_pk,
-            )
-        ]
+        exploits += exploits_from_file(
+            file=args.load_file,
+            rpcHTTP=args.rpc_http,
+            rpcWS=args.rpc_ws,
+            rpcIPC=args.rpc_ipc,
+            contract=args.contract,
+            account_pk=args.account_pk,
+        )
 
     if len(exploits) == 0:
         print("No exploits found. You're going to need to load some exploits.")
     else:
-        print("Found exploits(s)", exploits)
+        print("Found exploits(s):\n", exploits)
+
+    # Create a web3 instance
+    w3 = Web3(Web3.HTTPProvider(args.rpc_http))
 
     # Load history
     history_path = "./.theo_history"
@@ -122,6 +129,15 @@ def start_repl(args):
     readline.set_completer(rlcompleter.Completer(vars).complete)
     readline.parse_and_bind("tab: complete")
     del os, atexit, readline, rlcompleter, save_history
-    code.InteractiveConsole(vars).interact()
+    code.InteractiveConsole(vars).interact(
+        banner="""
+A few objects are available in the console:
+- `exploits` is an array of loaded exploits found by Mythril or read from a file
+- `w3` an initialized instance of web3py for the provided HTTP RPC endpoint
+
+Check the readme for more info:
+https://github.com/cleanunicorn/theo
+"""
+    )
 
     print("Shutting down")

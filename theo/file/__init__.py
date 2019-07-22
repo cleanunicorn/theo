@@ -9,7 +9,7 @@ def exploits_from_file(
     file, rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account_pk=""
 ):
     with open(file) as f:
-        transaction_list = json.load(f)
+        exploit_list = json.load(f)
 
     if rpcIPC is not None:
         print("Connecting to IPC: {rpc}.".format(rpc=rpcIPC))
@@ -21,16 +21,21 @@ def exploits_from_file(
         print("Connecting to HTTP: {rpc}.".format(rpc=rpcHTTP))
         w3 = Web3(Web3.HTTPProvider(rpcHTTP))
 
-    txs = []
-    for tx in transaction_list:
-        txs.append(Tx(data=tx.get("input", "0x"), value=tx.get("value", 0)))
+    exploits = []
 
-    exploit = Exploit(
-        txs=txs,
-        w3=w3,
-        contract=contract,
-        account=private_key_to_account(account_pk),
-        account_pk=account_pk,
-    )
+    for exploit in exploit_list:
+        txs = []
+        for tx in exploit:
+            txs.append(Tx(data=tx.get("input", "0x"), value=tx.get("value", 0)))
 
-    return exploit
+        exploits.append(
+            Exploit(
+                txs=txs,
+                w3=w3,
+                contract=contract,
+                account=private_key_to_account(account_pk),
+                account_pk=account_pk,
+            )
+        )
+
+    return exploits

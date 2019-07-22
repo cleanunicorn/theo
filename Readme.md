@@ -2,7 +2,14 @@
 
 # Theo
 
-Theo is a great hacker showing the other script kiddies how things should be done.
+Theo aims to be an exploitation framework or a blockchain recon and interaction tool.
+
+Features:
+
+- automatic smart contract scanning which generates a list of possible exploits.
+- generating and sending transactions to exploit a smart contract.
+- waiting for an actor to interact with a monitored smart contract, in order to frontrun them.
+- web3 console
 
 ![Theo](./static/theo-profile.png)
 
@@ -14,25 +21,77 @@ Theo's purpose is to fight script kiddies that try to be leet hackers. He can li
 
 ## Install
 
+Theo is available as a PyPI package:
+
+```console
+$ pip install theo
+$ theo --help
+usage: theo [-h] [--rpc-http RPC_HTTP] [--rpc-ws RPC_WS] [--rpc-ipc RPC_IPC]
+            [--account-pk ACCOUNT_PK] [--contract ADDRESS]
+            [--skip-mythril SKIP_MYTHRIL] [--load-file LOAD_FILE] [--version]
+
+Monitor contracts for balance changes or tx pool.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --rpc-http RPC_HTTP   Connect to this HTTP RPC (default:
+                        http://127.0.0.1:8545)
+  --account-pk ACCOUNT_PK
+                        The account's private key (default: None)
+  --contract ADDRESS    Contract to monitor (default: None)
+  --skip-mythril SKIP_MYTHRIL
+                        Don't try to find exploits with Mythril (default:
+                        False)
+  --load-file LOAD_FILE
+                        Load exploit from file (default: )
+  --version             show program's version number and exit
+
+RPC connections:
+  --rpc-ws RPC_WS       Connect to this WebSockets RPC (default: None)
+  --rpc-ipc RPC_IPC     Connect to this IPC RPC (default: None)
+```
+
+Install from sources
+
 ```console
 $ git clone https://github.com/cleanunicorn/theo
 $ cd theo
+$ virtualenv ./venv
+$ . ./venv/bin/activate
 $ pip install -r requirements.txt
+$ pip install -e .
+$ theo --help
 ```
-
-It's recommended to use [virtualenv](https://virtualenv.pypa.io/en/latest/) if you're familiar with it.
 
 Requirements: 
 
-- Python 3.5 or higher
-- An Ethereum node with RPC available
-- Accounts unlocked to be able to send transactions
+- Python 3.5 or higher.
+- An Ethereum node with RPC available. [Ganache](https://github.com/trufflesuite/ganache-cli) works really well for testing or for validating exploits.
 
-## Demo
+## Demos
 
-[Scrooge McEtherface](https://github.com/b-mueller/scrooge-mcetherface) tries to exploit a contract but Theo is able to successfully frontrun him.
+### Find exploit and run it
 
-[![asciicast](https://asciinema.org/a/KVbZpYZee39eWavEwiXMaemPI.svg)](https://asciinema.org/a/KVbZpYZee39eWavEwiXMaemPI)
+Scan a smart contract, find exploits, exploit it:
+
+- Start Ganache as our local Ethereum node
+- Deploy the vulnerable contract (happens in a different window)
+- Scan for exploits
+- Run exploit
+
+[![asciicast](https://asciinema.org/a/CgTH8tIAoGsgEYsd7XN65tJSp.svg)](https://asciinema.org/a/CgTH8tIAoGsgEYsd7XN65tJSp)
+
+### Frontrun victim
+
+Setup a honeypot, deploy honeypot, wait for attacker, frontrun:
+
+- Start geth as our local Ethereum node
+- Start mining
+- Deploy the honeypot
+- Start Theo and scan the mem pool for transactions
+- Frontrun the attacker and steal his ether
+
+[![asciicast](https://asciinema.org/a/n2HnSJvgopf8AKCoSfEJVgvxU.svg)](https://asciinema.org/a/n2HnSJvgopf8AKCoSfEJVgvxU?speed=2)
 
 ## Usage
 
@@ -157,4 +216,26 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> exploits[0].frontrun()
 Waiting for a victim to reach into the honey jar.
 Listening for Transaction: {'input': '0x4e71e0c8', 'value': '0xde0b6b3a7640000'}.
+```
+
+# Troubleshooting
+
+## openssl/aes.h: No such file or directory
+
+If you get this error, you need the libssl source libraries:
+
+```
+    scrypt-1.2.1/libcperciva/crypto/crypto_aes.c:6:10: fatal error: openssl/aes.h: No such file or directory
+     #include <openssl/aes.h>
+              ^~~~~~~~~~~~~~~
+    compilation terminated.
+    error: command 'x86_64-linux-gnu-gcc' failed with exit status 1
+    
+    ----------------------------------------
+Command "/usr/bin/python3 -u -c "import setuptools, tokenize;__file__='/tmp/pip-build-5rl4ep94/scrypt/setup.py';f=getattr(tokenize, 'open', open)(__file__);code=f.read().replace('\r\n', '\n');f.close();exec(compile(code, __file__, 'exec'))" install --record /tmp/pip-mnbzx9qe-record/install-record.txt --single-version-externally-managed --compile" failed with error code 1 in /tmp/pip-build-5rl4ep94/scrypt/
+```
+
+On Ubuntu you can install them with:
+```console
+$ sudo apt install libssl-dev
 ```
