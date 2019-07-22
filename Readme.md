@@ -1,6 +1,12 @@
 # Theo
 
-Theo aims to be an exploitation framework or a blockchain recon and interaction tool.
+![License](https://img.shields.io/github/license/cleanunicorn/theo.svg)
+[![CircleCI](https://circleci.com/gh/cleanunicorn/theo/tree/master.svg?style=shield)](https://circleci.com/gh/cleanunicorn/theo)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/71da66211eff42f298062a883b7fa5e9)](https://www.codacy.com/app/lucadanielcostin/theo)
+[![PyPI](https://img.shields.io/pypi/v/theo.svg)](https://pypi.org/project/theo/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+
+Theo aims to be an exploitation framework and a blockchain recon and interaction tool.
 
 Features:
 
