@@ -4,7 +4,6 @@ import code
 import getpass
 from web3 import Web3
 from theo.version import __version__
-from theo.server import Server
 from theo.scanner import exploits_from_mythril
 from theo.file import exploits_from_file
 from theo import private_key_to_account
