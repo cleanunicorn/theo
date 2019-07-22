@@ -77,7 +77,7 @@ Scan a smart contract, find exploits, exploit it:
 - Scan for exploits
 - Run exploit
 
-[![asciicast](https://asciinema.org/a/CgTH8tIAoGsgEYsd7XN65tJSp.svg)](https://asciinema.org/a/CgTH8tIAoGsgEYsd7XN65tJSp)
+[![asciicast](https://asciinema.org/a/CgTH8tIAoGsgEYsd7XN65tJSp.svg)](https://asciinema.org/a/CgTH8tIAoGsgEYsd7XN65tJSp?speed=2)
 
 ### Frontrun victim
 
