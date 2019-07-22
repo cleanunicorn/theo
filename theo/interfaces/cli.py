@@ -58,7 +58,7 @@ def main():
         args.account_pk = getpass.getpass(
             prompt="The account's private key (input hidden)\n> "
         )
-        args.account = private_key_to_account(args.account_pk)
+    args.account = private_key_to_account(args.account_pk)
 
     if args.contract is None:
         args.contract = input("Contract to interact with\n> ")
