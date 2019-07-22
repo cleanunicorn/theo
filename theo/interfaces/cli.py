@@ -1,7 +1,6 @@
 # from argparse_prompt import PromptParser
 import argparse
 import code
-import json
 import getpass
 from web3 import Web3
 from theo.version import __version__
