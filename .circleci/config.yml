@@ -45,6 +45,10 @@ jobs:
       - checkout:
           path: ~/app
       - run:
+          name: Install dependencies
+          command: |
+            pip install --user -r requirements.txt
+      - run:
           name: Verify Git tag vs. version
           command: python3 setup.py verify
       - run:
