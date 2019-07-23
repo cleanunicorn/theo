@@ -2,11 +2,15 @@
 import argparse
 import code
 import getpass
+import os
+import readline
+import atexit
+import rlcompleter
 from web3 import Web3
 from theo.version import __version__
 from theo.scanner import exploits_from_mythril
 from theo.file import exploits_from_file
-from theo import private_key_to_account
+from theo import *
 
 
 def main():
@@ -103,7 +107,7 @@ def start_repl(args):
         print("Found exploits(s):\n", exploits)
 
     # Create a web3 instance
-    w3 = Web3(Web3.HTTPProvider(args.rpc_http))
+    w3 = Web3(Web3.HTTPProvider(args.rpc_http, request_kwargs={"timeout": 60}))
 
     # Load history
     history_path = "./.theo_history"
@@ -113,30 +117,32 @@ def start_repl(args):
 
         readline.write_history_file(history_path)
 
-    import os
-    import readline
     if os.path.isfile(history_path):
         readline.read_history_file(history_path)
     # Trigger history save on exit
-    import atexit
     atexit.register(save_history)
     # Load variables
     vars = globals()
     vars.update(locals())
     # Start REPL
-    import rlcompleter
     readline.set_completer(rlcompleter.Completer(vars).complete)
     readline.parse_and_bind("tab: complete")
     del os, atexit, readline, rlcompleter, save_history
     code.InteractiveConsole(vars).interact(
         banner="""
+
+Theo version {version}.
+
 A few objects are available in the console:
 - `exploits` is an array of loaded exploits found by Mythril or read from a file
 - `w3` an initialized instance of web3py for the provided HTTP RPC endpoint
 
 Check the readme for more info:
 https://github.com/cleanunicorn/theo
-"""
+
+""".format(
+            version=__version__
+        )
     )
 
     print("Shutting down")
