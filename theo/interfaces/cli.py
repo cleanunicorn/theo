@@ -109,24 +109,18 @@ def start_repl(args):
     import os, atexit, readline, rlcompleter
 
     # Load history
-    history_path = "~/.theo_history"
-
-    def save_history(historyPath=history_path):
-        import readline
-
-        readline.write_history_file(history_path)
-
+    history_path = os.path.join(os.environ["HOME"], ".theo_history")
     if os.path.isfile(history_path):
         readline.read_history_file(history_path)
     # Trigger history save on exit
-    atexit.register(save_history)
+    atexit.register(readline.write_history_file, history_path)
     # Load variables
     vars = globals()
     vars.update(locals())
     # Start REPL
     readline.set_completer(rlcompleter.Completer(vars).complete)
     readline.parse_and_bind("tab: complete")
-    del os, atexit, readline, rlcompleter, save_history
+    del os, atexit, readline, rlcompleter
     code.InteractiveConsole(vars).interact(
         banner="""
 Theo version {version}.
