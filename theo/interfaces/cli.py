@@ -2,7 +2,6 @@
 import argparse
 import code
 import getpass
-import os
 import readline
 import atexit
 import rlcompleter
@@ -109,12 +108,13 @@ def start_repl(args):
     # Create a web3 instance
     w3 = Web3(Web3.HTTPProvider(args.rpc_http, request_kwargs={"timeout": 60}))
 
+    # Imports for REPL
+    import os, atexit, readline, rlcompleter
     # Load history
     history_path = "./.theo_history"
 
     def save_history(historyPath=history_path):
         import readline
-
         readline.write_history_file(history_path)
 
     if os.path.isfile(history_path):
@@ -130,12 +130,12 @@ def start_repl(args):
     del os, atexit, readline, rlcompleter, save_history
     code.InteractiveConsole(vars).interact(
         banner="""
-
 Theo version {version}.
 
-A few objects are available in the console:
+Tools available in the console:
 - `exploits` is an array of loaded exploits found by Mythril or read from a file
 - `w3` an initialized instance of web3py for the provided HTTP RPC endpoint
+- `dump()` writing a json representation of an object to a local file
 
 Check the readme for more info:
 https://github.com/cleanunicorn/theo
