@@ -111,7 +111,7 @@ def start_repl(args):
     # Imports for REPL
     import os, atexit, readline, rlcompleter
     # Load history
-    history_path = "./.theo_history"
+    history_path = "~/.theo_history"
 
     def save_history(historyPath=history_path):
         import readline
