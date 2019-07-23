@@ -2,9 +2,6 @@
 import argparse
 import code
 import getpass
-import readline
-import atexit
-import rlcompleter
 from web3 import Web3
 from theo.version import __version__
 from theo.scanner import exploits_from_mythril
@@ -110,11 +107,13 @@ def start_repl(args):
 
     # Imports for REPL
     import os, atexit, readline, rlcompleter
+
     # Load history
     history_path = "~/.theo_history"
 
     def save_history(historyPath=history_path):
         import readline
+
         readline.write_history_file(history_path)
 
     if os.path.isfile(history_path):
