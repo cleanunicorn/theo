@@ -51,6 +51,7 @@ def main():
         "--version", action="version", version="Version: {}".format(__version__)
     )
 
+    # Parse all arguments
     args = parser.parse_args()
 
     # Get account from the private key
@@ -114,19 +115,16 @@ def start_repl(args):
 
     import os
     import readline
-
     if os.path.isfile(history_path):
         readline.read_history_file(history_path)
     # Trigger history save on exit
     import atexit
-
     atexit.register(save_history)
     # Load variables
     vars = globals()
     vars.update(locals())
     # Start REPL
     import rlcompleter
-
     readline.set_completer(rlcompleter.Completer(vars).complete)
     readline.parse_and_bind("tab: complete")
     del os, atexit, readline, rlcompleter, save_history
