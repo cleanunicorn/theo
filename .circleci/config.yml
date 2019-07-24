@@ -3,7 +3,7 @@
 
 defaults: &defaults
   docker:
-    - image: circleci/python:3.7.1
+    - image: circleci/python:3.7.3
   working_directory: ~/app
 
 version: 2
@@ -44,7 +44,12 @@ jobs:
 
       - store_artifacts:
           path: test-results
-          destination: tr1          
+          destination: tr1
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements.txt" }}          
 
   pypi_release:
     <<: *defaults

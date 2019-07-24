@@ -1,4 +1,4 @@
-import jsonpickle, time
+import time, json
 
 
 def private_key_to_account(pk: str):
@@ -15,6 +15,6 @@ def dump(ob=None, filename=None):
     if filename is None:
         filename = "{name}.json".format(name=time.time_ns())
 
-    pickled = jsonpickle.encode(ob)
+    pickled = json.dumps(ob)
     with open(filename, "w") as f:
         f.write(pickled)
