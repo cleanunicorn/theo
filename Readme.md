@@ -10,10 +10,14 @@ Theo aims to be an exploitation framework and a blockchain recon and interaction
 
 Features:
 
-- automatic smart contract scanning which generates a list of possible exploits.
-- generating and sending transactions to exploit a smart contract.
-- waiting for an actor to interact with a monitored smart contract, in order to frontrun them.
-- web3 console
+- Automatic smart contract scanning which generates a list of possible exploits.
+- Sending transactions to exploit a smart contract.
+- Transaction pool monitor.
+- Web3 console
+- Frontrunning and backrunning transactions.
+- Waiting for a list of transactions and sending out others.
+- Estimating gas for transactions means only successful transactions are sent.
+- Disabling gas estimation will send transactions with a fixed gas quantity.
 
 <!--![Theo](./static/theo-profile.png)-->
 
@@ -197,22 +201,25 @@ This works very well for some specially crafted [contracts](./contracts/) or som
 
 Instead of identifying the exploits with mythril, you can specify the list of exploits yourself.
 
-Create a file that looks like this [input-tx.json](./test/input-tx.json):
+Create a file that looks like this [exploits.json](./test/input-tx.json):
 
 ```json
 [
     [
         {
+            "name": "claimOwnership()",
             "input": "0x4e71e0c8",
             "value": "0xde0b6b3a7640000"
         },
         {
+            "name": "retrieve()",
             "input": "0x2e64cec1",
             "value": "0x0"
         }
     ],
     [
         {
+            "name": "claimOwnership()",
             "input": "0x4e71e0c8",
             "value": "0xde0b6b3a7640000"
         }
@@ -220,7 +227,13 @@ Create a file that looks like this [input-tx.json](./test/input-tx.json):
 ]
 ```
 
-This one defines 2 exploits, the first one has 2 transactions and the second one only 1 transaction. After the exploits are loaded, frontrunning is the same.
+This one defines 2 exploits, the first one has 2 transactions and the second one only has 1 transaction. 
+
+You can load it with: 
+
+```console
+$ theo --load-file=./exploits.json
+```
 
 # Troubleshooting
 
