@@ -71,12 +71,13 @@ def exploits_from_mythril(
         w3 = Web3(Web3.HTTPProvider(rpcHTTP))
 
     exploits = []
+
     for ri in report.issues:
         txs = []
         issue = report.issues[ri]
 
         for si in issue.transaction_sequence["steps"]:
-            txs.append(Tx(data=si["input"], value=si["value"]))
+            txs.append(Tx(data=si["input"], value=si["value"], name=si["name"]))
 
         exploits.append(
             Exploit(
@@ -85,6 +86,9 @@ def exploits_from_mythril(
                 contract=contract,
                 account=private_key_to_account(account_pk),
                 account_pk=account_pk,
+                title=issue.title,
+                description=issue.description,
+                swc_id=issue.swc_id,
             )
         )
 
