@@ -26,7 +26,13 @@ def exploits_from_file(
     for exploit in exploit_list:
         txs = []
         for tx in exploit:
-            txs.append(Tx(data=tx.get("data", "0x"), value=tx.get("value", 0), name=tx.get("name", "")))
+            txs.append(
+                Tx(
+                    data=tx.get("data", "0x"),
+                    value=tx.get("value", 0),
+                    name=tx.get("name", ""),
+                )
+            )
 
         exploits.append(
             Exploit(
