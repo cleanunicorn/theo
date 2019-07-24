@@ -100,7 +100,9 @@ def start_repl(args):
     if len(exploits) == 0:
         print("No exploits found. You're going to need to load some exploits.")
     else:
-        print("Found exploits(s):\n", exploits)
+        print("")
+        print("Found exploits(s):")
+        print(exploits)
 
     # Create a web3 instance
     w3 = Web3(Web3.HTTPProvider(args.rpc_http, request_kwargs={"timeout": 60}))
@@ -123,8 +125,6 @@ def start_repl(args):
     del os, atexit, readline, rlcompleter
     code.InteractiveConsole(vars).interact(
         banner="""
-Theo version {version}.
-
 Tools available in the console:
 - `exploits` is an array of loaded exploits found by Mythril or read from a file
 - `w3` an initialized instance of web3py for the provided HTTP RPC endpoint
@@ -132,6 +132,8 @@ Tools available in the console:
 
 Check the readme for more info:
 https://github.com/cleanunicorn/theo
+
+Theo version {version}.
 
 """.format(
             version=__version__
