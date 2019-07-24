@@ -15,7 +15,7 @@ Features:
 - waiting for an actor to interact with a monitored smart contract, in order to frontrun them.
 - web3 console
 
-![Theo](./static/theo-profile.png)
+<!--![Theo](./static/theo-profile.png)-->
 
 He knows [Karl](https://github.com/cleanunicorn/karl) from work.
 
