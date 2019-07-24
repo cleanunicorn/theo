@@ -39,15 +39,18 @@ jobs:
           command: python3 setup.py install
           working_directory: ~/app
 
+      - store_test_results:
+          path: test-results
+
+      - store_artifacts:
+          path: test-results
+          destination: tr1          
+
   pypi_release:
     <<: *defaults
     steps:
       - checkout:
           path: ~/app
-      - run:
-          name: Install dependencies
-          command: |
-            pip install --user -r requirements.txt
       - run:
           name: Verify Git tag vs. version
           command: python3 setup.py verify
