@@ -104,8 +104,10 @@ def start_repl(args):
         print("Found exploits(s):")
         print(exploits)
 
-    # Create a web3 instance
+    # Add local tools for console
     w3 = Web3(Web3.HTTPProvider(args.rpc_http, request_kwargs={"timeout": 60}))
+    from theo.exploit.exploit import Exploit
+    from theo.exploit.tx import Tx
 
     # Imports for REPL
     import os, atexit, readline, rlcompleter
