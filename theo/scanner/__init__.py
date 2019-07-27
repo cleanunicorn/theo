@@ -13,6 +13,7 @@ def exploits_from_mythril(
     rpcHTTP="http://localhost:8545",
     rpcWS=None,
     rpcIPC=None,
+    timeout=300,
     contract="",
     account_pk="",
     strategy="bfs",
@@ -62,13 +63,13 @@ def exploits_from_mythril(
 
     if rpcIPC is not None:
         print("Connecting to IPC: {rpc}.".format(rpc=rpcIPC))
-        w3 = Web3(Web3.IPCProvider(rpcIPC))
+        w3 = Web3(Web3.IPCProvider(rpcIPC, timeout=timeout))
     elif rpcWS is not None:
         print("Connecting to WebSocket: {rpc}.".format(rpc=rpcWS))
-        w3 = Web3(Web3.WebsocketProvider(rpcWS))
+        w3 = Web3(Web3.WebsocketProvider(rpcWS, websocket_kwargs={"timeout": timeout}))
     else:
         print("Connecting to HTTP: {rpc}.".format(rpc=rpcHTTP))
-        w3 = Web3(Web3.HTTPProvider(rpcHTTP))
+        w3 = Web3(Web3.HTTPProvider(rpcHTTP, request_kwargs={"timeout": timeout}))
 
     exploits = []
 

@@ -24,6 +24,7 @@ def main():
     rpc = parser.add_argument_group("RPC connections")
     rpc.add_argument("--rpc-ws", help="Connect to this WebSockets RPC", default=None)
     rpc.add_argument("--rpc-ipc", help="Connect to this IPC RPC", default=None)
+    rpc.add_argument("--timeout", help="Timeout for RPC connections", default=300)
 
     # Account to use for attacking
     parser.add_argument("--account-pk", help="The account's private key")
@@ -86,6 +87,7 @@ def start_repl(args):
             rpcIPC=args.rpc_ipc,
             contract=args.contract,
             account_pk=args.account_pk,
+            timeout=args.timeout,
         )
     if args.load_file != "":
         exploits += exploits_from_file(
@@ -95,6 +97,7 @@ def start_repl(args):
             rpcIPC=args.rpc_ipc,
             contract=args.contract,
             account_pk=args.account_pk,
+            timeout=args.timeout,
         )
 
     if len(exploits) == 0:
@@ -105,7 +108,7 @@ def start_repl(args):
         print(exploits)
 
     # Add local tools for console
-    w3 = Web3(Web3.HTTPProvider(args.rpc_http, request_kwargs={"timeout": 60}))
+    w3 = Web3(Web3.HTTPProvider(args.rpc_http, request_kwargs={"timeout": args.timeout}))
     from theo.exploit.exploit import Exploit
     from theo.exploit.tx import Tx
 
