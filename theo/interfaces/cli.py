@@ -108,7 +108,9 @@ def start_repl(args):
         print(exploits)
 
     # Add local tools for console
-    w3 = Web3(Web3.HTTPProvider(args.rpc_http, request_kwargs={"timeout": args.timeout}))
+    w3 = Web3(
+        Web3.HTTPProvider(args.rpc_http, request_kwargs={"timeout": args.timeout})
+    )
     from theo.exploit.exploit import Exploit
     from theo.exploit.tx import Tx
 

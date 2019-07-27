@@ -6,7 +6,7 @@ from theo import private_key_to_account
 
 
 def exploits_from_file(
-    file, rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account_pk="", timeout=300,
+    file, rpcHTTP=None, rpcWS=None, rpcIPC=None, contract="", account_pk="", timeout=300
 ):
     with open(file) as f:
         exploit_list = json.load(f)
