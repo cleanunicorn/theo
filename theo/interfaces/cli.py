@@ -22,29 +22,29 @@ def main():
     )
     # Optional connections
     rpc = parser.add_argument_group("RPC connections")
-    rpc.add_argument("--rpc-ws", help="Connect to this WebSockets RPC", default=None)
-    rpc.add_argument("--rpc-ipc", help="Connect to this IPC RPC", default=None)
-    rpc.add_argument("--timeout", help="Timeout for RPC connections", default=300)
+    rpc.add_argument("--rpc-ws", help="connect to this WebSockets RPC", default=None)
+    rpc.add_argument("--rpc-ipc", help="connect to this IPC RPC", default=None)
+    rpc.add_argument("--timeout", help="timeout for RPC connections", default=300)
 
     # Account to use for attacking
-    parser.add_argument("--account-pk", help="The account's private key")
+    parser.add_argument("--account-pk", help="the account's private key")
 
     # Contract to monitor
     parser.add_argument(
-        "--contract", help="Contract to interact with", metavar="ADDRESS"
+        "--contract", help="contract to interact with", metavar="ADDRESS"
     )
 
     # Find exploits with Mythril
     parser.add_argument(
         "--skip-mythril",
-        help="Skip scanning the contract with Mythril",
+        help="skip scanning the contract with Mythril",
         default=False,
         action="store_true",
     )
 
     # Load exploits from file
     parser.add_argument(
-        "--load-file", type=str, help="Load exploit from file", default=""
+        "--load-file", help="load exploit from file", default=None
     )
 
     # Print version and exit
@@ -89,7 +89,7 @@ def start_repl(args):
             account_pk=args.account_pk,
             timeout=args.timeout,
         )
-    if args.load_file != "":
+    if args.load_file is not None:
         exploits += exploits_from_file(
             file=args.load_file,
             rpcHTTP=args.rpc_http,
