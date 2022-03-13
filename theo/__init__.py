@@ -10,8 +10,7 @@ def private_key_to_account(pk: str):
 
 
 def dump(ob=None, filename=None):
-    """Dumps the provided object to a file in json format.
-    """
+    """Dumps the provided object to a file in json format."""
     if filename is None:
         filename = "{name}.json".format(name=time.time_ns())
 

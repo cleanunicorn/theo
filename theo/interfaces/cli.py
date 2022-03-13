@@ -43,9 +43,7 @@ def main():
     )
 
     # Load exploits from file
-    parser.add_argument(
-        "--load-file", help="load exploit from file", default=None
-    )
+    parser.add_argument("--load-file", help="load exploit from file", default=None)
 
     # Print version and exit
     parser.add_argument(
