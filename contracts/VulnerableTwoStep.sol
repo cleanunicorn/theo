@@ -1,24 +1,38 @@
+// pragma solidity ^0.5.0;
 
 contract VulnerableTwoStep {
-    address payable public owner;
-    bool public owner_reset = false;
+    address public player;
+    address public owner;
+    bool public claimed;
 
     constructor() public payable {
         owner = msg.sender;
     }
 
+    function reset() public payable {
+        require(owner == msg.sender);
+
+        player = address(0);
+        claimed = false;
+    }
+
     function() external payable {}
 
-    function become_owner() public payable {
-        require(msg.value == 1 ether);
+    function claimOwnership() public payable {
+        require(msg.value == 0.1 ether);
 
-        if (owner_reset == false) {
-            owner_reset = true;
-            owner = msg.sender;
+        if (claimed == false) {
+            player = msg.sender;
+            claimed = true;
         }
     }
 
-    function steal() public payable {
-        owner.transfer(address(this).balance);
+    function retrieve() public {
+        require(msg.sender == player);
+
+        msg.sender.transfer(address(this).balance);
+
+        player = address(0);
+        claimed = false;
     }
 }

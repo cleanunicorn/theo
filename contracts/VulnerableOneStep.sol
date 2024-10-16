@@ -9,7 +9,7 @@ contract Vulnerable {
 
     function() external payable {}
 
-    function steal() public payable {
+    function retrieve() public payable {
         require(msg.value >= 1 ether);
 
         msg.sender.transfer(address(this).balance);

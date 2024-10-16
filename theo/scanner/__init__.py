@@ -13,6 +13,7 @@ def exploits_from_mythril(
     rpcHTTP="http://localhost:8545",
     rpcWS=None,
     rpcIPC=None,
+    timeout=300,
     contract="",
     account_pk="",
     strategy="bfs",
@@ -62,21 +63,22 @@ def exploits_from_mythril(
 
     if rpcIPC is not None:
         print("Connecting to IPC: {rpc}.".format(rpc=rpcIPC))
-        w3 = Web3(Web3.IPCProvider(rpcIPC))
+        w3 = Web3(Web3.IPCProvider(rpcIPC, timeout=timeout))
     elif rpcWS is not None:
         print("Connecting to WebSocket: {rpc}.".format(rpc=rpcWS))
-        w3 = Web3(Web3.WebsocketProvider(rpcWS))
+        w3 = Web3(Web3.WebsocketProvider(rpcWS, websocket_kwargs={"timeout": timeout}))
     else:
         print("Connecting to HTTP: {rpc}.".format(rpc=rpcHTTP))
-        w3 = Web3(Web3.HTTPProvider(rpcHTTP))
+        w3 = Web3(Web3.HTTPProvider(rpcHTTP, request_kwargs={"timeout": timeout}))
 
     exploits = []
+
     for ri in report.issues:
         txs = []
         issue = report.issues[ri]
 
         for si in issue.transaction_sequence["steps"]:
-            txs.append(Tx(data=si["input"], value=si["value"]))
+            txs.append(Tx(data=si["input"], value=si["value"], name=si["name"]))
 
         exploits.append(
             Exploit(
@@ -85,6 +87,9 @@ def exploits_from_mythril(
                 contract=contract,
                 account=private_key_to_account(account_pk),
                 account_pk=account_pk,
+                title=issue.title,
+                description=issue.description,
+                swc_id=issue.swc_id,
             )
         )
 

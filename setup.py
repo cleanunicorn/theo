@@ -42,4 +42,5 @@ setup(
     long_description_content_type="text/markdown",
     entry_points={"console_scripts": ["theo=theo.interfaces.cli:main"]},
     cmdclass={"verify": VerifyVersionCommand},
+    url="https://github.com/cleanunicorn/theo",
 )
