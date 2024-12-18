@@ -1,5 +1,7 @@
 # Theo
 
+**Obsolete, not maintained anymore, don't install it, don't use it, you were warned!**
+
 ![License](https://img.shields.io/github/license/cleanunicorn/theo.svg)
 [![CircleCI](https://circleci.com/gh/cleanunicorn/theo/tree/master.svg?style=shield)](https://circleci.com/gh/cleanunicorn/theo)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/71da66211eff42f298062a883b7fa5e9)](https://www.codacy.com/app/lucadanielcostin/theo)
